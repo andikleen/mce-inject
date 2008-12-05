@@ -8,6 +8,7 @@
 #include "parser.h"
 #include "mce.tab.h"
 #include "util.h"
+#include "inject.h"
 
 int yylineno;
 
@@ -115,6 +116,8 @@ int main(int ac, char **av)
  		do_dump = 1;
  		av++;
  	}
+ 	init_cpu_info();
+ 	init_inject();
 	if (*argv)
 		yywrap();
 	return yyparse();
