@@ -1,5 +1,26 @@
-/* Grammar for machine check injection. Follows the format printed out 
-   by the kernel on panics with some extensions.  See SPEC. */
+/* Copyright (c) 2008 by Intel Corp.
+   Grammar for machine check injection. Follows the format printed out 
+   by the kernel on panics with some extensions.  See SPEC.
+
+   mce-inject is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public
+   License as published by the Free Software Foundation; version
+   2.
+
+   mce-inject is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+
+   You should find a copy of v2 of the GNU General Public License somewhere
+   on your Linux system; if not, write to the Free Software Foundation,
+   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+   Authors:
+        Andi Kleen
+	Ying Huang
+*/
+
 %{
 #include <string.h>
 #include <stdarg.h>
