@@ -30,10 +30,9 @@ static void init(void);
 %%
 
 input: /* empty */ 
-     | input mce_start mce { submit_mce(&m); } ; 
+     | input mce_start mce { submit_mce(&m); } ;
 
-mce_start: 
-     | CPU NUMBER 	   { init(); m.cpu = $2; }
+mce_start: CPU NUMBER 	   { init(); m.cpu = $2; }
      | CPU NUMBER NUMBER   { init(); m.cpu = $2; m.bank = $3; }
      | MCE		   { init(); } 
      | CPU NUMBER ':'
@@ -43,7 +42,11 @@ mce_start:
 			     m.bank = $8; m.status = $10; }
      ;
 
-mce:   STATUS status_list  { m.status = $2; }
+mce:  mce_term
+     | mce mce_term
+     ;
+
+mce_term:   STATUS status_list  { m.status = $2; }
      | MCGSTATUS mcgstatus_list { m.mcgstatus = $2; } 
      | BANK NUMBER 	   { m.bank = $2; }
     
