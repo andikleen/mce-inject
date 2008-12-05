@@ -112,7 +112,7 @@ int main(int ac, char **av)
 {
 	init_lex();
 	argv = ++av;	
- 	if (!strcmp(*av, "--dump")) {
+ 	if (*av && !strcmp(*av, "--dump")) {
  		do_dump = 1;
  		av++;
  	}
