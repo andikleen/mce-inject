@@ -95,7 +95,7 @@ static void *injector(void *data)
 }
 
 /* Simulate machine check broadcast.  */
-void broadcast_mce(int fd, struct mce *m)
+void do_inject_mce(int fd, struct mce *m)
 {
 	int i;
 	struct mce otherm;
@@ -116,19 +116,21 @@ void broadcast_mce(int fd, struct mce *m)
  		cpu_set_t aset;
  
  		NEW(t);
- 		t->next = tlist;
- 		tlist = t;
  		if (cpu == m->cpu) {
  			t->m = m;
  			t->monarch = 1;
  		} else if (cpu_mce[i])
  			t->m = cpu_mce[i];
+ 		else if (mce_flags & MCE_NOBROADCAST)
+ 			continue;
  		else {
  			t->m = &t->otherm;
   			t->otherm = otherm;
   			t->otherm.cpu = cpu;
   		}
  		t->fd = fd;
+ 		t->next = tlist;
+ 		tlist = t;
  
  		pthread_attr_init(&attr);
  		CPU_ZERO(&aset);
@@ -169,13 +171,9 @@ void inject_mce(struct mce *m)
 	inject_fd = open("/dev/mcelog", O_RDWR);
 	if (inject_fd < 0) 
 		err("opening of /dev/mcelog");
-
-	if ((m->status & MCI_STATUS_UC) && !(mce_flags & MCE_NOBROADCAST)) { 
-		/* broadcast */
-		broadcast_mce(inject_fd, m);
-	} else { 
-		write_mce(inject_fd, m);
-	}
+	if (!(m->status & MCI_STATUS_UC))
+		mce_flags |= MCE_NOBROADCAST;
+	do_inject_mce(inject_fd, m);
 	close(inject_fd);
 }
 
