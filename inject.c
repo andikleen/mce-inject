@@ -37,7 +37,7 @@ static void *injector(void *data)
 {
 	struct thread *t = (struct thread *)data;
 	
-	while (blocked == 0)
+	while (blocked)
 		barrier();
 
 	write_mce(t->fd, t->m);
