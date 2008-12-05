@@ -4,7 +4,7 @@ LDFLAGS += -lpthread
 OBJ := mce.tab.o lex.yy.o inject.o util.o
 GENSRC := mce.tab.c mce.tab.h lex.yy.c
 SRC := inject.c util.c
-CLEAN := ${OBJ} ${GENSRC} inject
+CLEAN := ${OBJ} ${GENSRC} inject .gdb_history .depend
 DISTCLEAN := .depend .gdb_history
 
 .PHONY: clean depend
