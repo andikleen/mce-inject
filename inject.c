@@ -73,6 +73,7 @@ struct thread {
 	struct mce *m;
 	struct mce otherm;
 	int fd;
+	int monarch;
 };
 
 volatile int blocked;
@@ -83,6 +84,11 @@ static void *injector(void *data)
 	
 	while (blocked)
 		barrier();
+
+	if (!t->monarch) {
+		int i;
+		for (i = 0; i < 1000000; i++);
+	}
 
 	write_mce(t->fd, t->m);
 	return NULL;
@@ -118,7 +124,13 @@ void broadcast_mce(int fd, struct mce *m)
 			NEW(t);
 			t->next = tlist;
 			tlist = t;
-			t->m = cpu == m->cpu ? m : &t->otherm;
+			if (cpu == m->cpu) {
+				t->m = m;
+				t->monarch = 1;
+			} else {
+				t->m = &t->otherm;
+				t->monarch = 0;
+			}
 			t->fd = fd;
 			t->otherm = otherm;
 			t->otherm.cpu = cpu;
