@@ -97,9 +97,7 @@ static void *injector(void *data)
 /* Simulate machine check broadcast.  */
 void broadcast_mce(int fd, struct mce *m)
 {
-	FILE *f = fopen("/proc/cpuinfo", "r");
-	char *line = NULL;
-	size_t linesz = 0;
+	int i;
 	struct mce otherm;
 	struct thread *tlist = NULL;
 
@@ -108,44 +106,38 @@ void broadcast_mce(int fd, struct mce *m)
 	otherm.mcgstatus = m->mcgstatus & MCG_STATUS_MCIP;
 	otherm.status = m->status & MCI_STATUS_UC;
 
-	if (!f) 
-		err("opening of /proc/cpuinfo");
-
 	blocked = 1;
 	barrier();
 
-	while (getdelim(&line, &linesz, '\n', f) > 0) { 
-		unsigned cpu;
-		if (sscanf(line, "processor : %u\n", &cpu) == 1) { 
-			struct thread *t;
-			pthread_attr_t attr;
-			cpu_set_t aset;
-
-			NEW(t);
-			t->next = tlist;
-			tlist = t;
-			if (cpu == m->cpu) {
-				t->m = m;
-				t->monarch = 1;
-			} else {
-				t->m = &t->otherm;
-				t->monarch = 0;
-			}
-			t->fd = fd;
-			t->otherm = otherm;
-			t->otherm.cpu = cpu;
-
-			pthread_attr_init(&attr);
-			CPU_ZERO(&aset);
-			CPU_SET(cpu, &aset);
-			if (pthread_attr_setaffinity_np(&attr, CPU_SETSIZE, &aset) < 0)
-				err("pthread_attr_setaffinity");
-			if (pthread_create(&t->thr, &attr, injector, t) < 0)
-				err("pthread_create");
-		}
-	}
-	free(line);
-	fclose(f);
+ 	for (i = 0; i < cpu_num; i++) {
+ 		unsigned cpu = cpu_map[i];
+ 		struct thread *t;
+ 		pthread_attr_t attr;
+ 		cpu_set_t aset;
+ 
+ 		NEW(t);
+ 		t->next = tlist;
+ 		tlist = t;
+ 		if (cpu == m->cpu) {
+ 			t->m = m;
+ 			t->monarch = 1;
+ 		} else if (cpu_mce[i])
+ 			t->m = cpu_mce[i];
+ 		else {
+ 			t->m = &t->otherm;
+  			t->otherm = otherm;
+  			t->otherm.cpu = cpu;
+  		}
+ 		t->fd = fd;
+ 
+ 		pthread_attr_init(&attr);
+ 		CPU_ZERO(&aset);
+ 		CPU_SET(cpu, &aset);
+ 		if (pthread_attr_setaffinity_np(&attr, sizeof(aset), &aset))
+ 			err("pthread_attr_setaffinity");
+ 		if (pthread_create(&t->thr, &attr, injector, t))
+ 			err("pthread_create");
+  	}
 
 	/* could wait here for the threads to start up, but the kernel timeout should
 	   be long enough to catch slow ones */
@@ -164,6 +156,15 @@ void broadcast_mce(int fd, struct mce *m)
 void inject_mce(struct mce *m)
 {
 	int inject_fd;
+
+	if (mce_flags & MCE_HOLD) {
+		int cpu_index = cpu_id_to_index(m->cpu);
+		struct mce *nm;
+		NEW(nm);
+		*nm = *m;
+		cpu_mce[cpu_index] = nm;
+		return;
+	}
 
 	inject_fd = open("/dev/mcelog", O_RDWR);
 	if (inject_fd < 0) 

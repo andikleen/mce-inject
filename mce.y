@@ -18,7 +18,7 @@ static void init(void);
 
 %} 
 
-%token STATUS RIP TSC ADDR MISC CPU BANK MCGSTATUS NOBROADCAST
+%token STATUS RIP TSC ADDR MISC CPU BANK MCGSTATUS NOBROADCAST HOLD
 %token CORRECTED UNCORRECTED FATAL MCE
 %token NUMBER
 %token SYMBOL
@@ -60,6 +60,7 @@ mce_term:   STATUS status_list  { m.status = $2; }
      | ADDR NUMBER	   { m.addr = $2; m.status |= MCI_STATUS_ADDRV; }
      | MISC NUMBER	   { m.misc = $2; m.status |= MCI_STATUS_MISCV; } 
      | NOBROADCAST	   { mce_flags |= MCE_NOBROADCAST; } 
+     | HOLD		   { mce_flags |= MCE_HOLD; }
      ; 
 
 mcgstatus_list:  /* empty */
