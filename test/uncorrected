@@ -1,0 +1,4 @@
+# this should just kill the process
+STATUS uncorrected EIPV
+ADDR 0x1234
+RIP 0xdeadbabe

@@ -1,0 +1,11 @@
+mce-inject allows to inject machine check errors on the 
+software level into a running Linux kernel.
+
+mce-inject file ..
+
+See SPEC for the input language
+
+Some simple tests are in test/*.
+Warning: some of them will panic the machine (this is intended)
+
+Requires a new Linux kernel with error injection patches.
