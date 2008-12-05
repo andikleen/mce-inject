@@ -50,6 +50,12 @@ NOBROADCAST
 	Don't broadcast exceptions to all CPUs. Default is to broadcast
 	UC
 
+IN_IRQ
+	MCE should injected in IRQ context
+
+HOLD
+	Don't inject MCE immediately but hold it for later injection
+	This is useful for testing injection on multiple CPUs in parallel
 
 multiple fields can be on a line
 
