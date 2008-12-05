@@ -23,6 +23,13 @@
 #define MCI_STATUS_ADDRV (1ULL<<58)  /* addr reg. valid */
 #define MCI_STATUS_PCC   (1ULL<<57)  /* processor context corrupt */
 
+#define MCJ_CTX_MASK           3
+#define MCJ_CTX(flags)         ((flags) & MCJ_CTX_MASK)
+#define MCJ_CTX_RANDOM         0    /* inject context: random */
+#define MCJ_CTX_PROCESS        1    /* inject context: process */
+#define MCJ_CTX_IRQ            2    /* inject context: IRQ */
+#define MCJ_NMI_BROADCAST      4    /* do NMI broadcasting */
+
 /* Fields are zero when not available */
 struct mce {
 	__u64 status;
@@ -31,13 +38,16 @@ struct mce {
 	__u64 mcgstatus;
 	__u64 ip;
 	__u64 tsc;	/* cpu time stamp counter */
-	__u64 res1;	/* for future extension */
-	__u64 res2;	/* dito. */
-	__u8  cs;		/* code segment */
+	__u64 time;	/* wall time_t when error was detected */
+	__u8  cpuvendor;	/* cpu vendor as encoded in system.h */
+	__u8  inject_flags;
+	__u16 pad2;
+	__u32 cpuid;	/* CPUID 1 EAX */
+	__u8  cs;	/* code segment */
 	__u8  bank;	/* machine check bank */
 	__u8  cpu;	/* cpu that raised the error */
 	__u8  finished;   /* entry is valid */
-	__u32 pad;
+	__u32 extcpu;	/* extended CPU number */
 };
 
 /*

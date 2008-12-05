@@ -82,7 +82,7 @@ mce_term:   STATUS status_list  { m.status = $2; }
      | MISC NUMBER	   { m.misc = $2; m.status |= MCI_STATUS_MISCV; } 
      | NOBROADCAST	   { mce_flags |= MCE_NOBROADCAST; } 
      | HOLD		   { mce_flags |= MCE_HOLD; }
-     | IN_IRQ		   { m.pad = MCEC_IRQ; }
+     | IN_IRQ		   { m.inject_flags |= MCEC_IRQ; }
      ; 
 
 mcgstatus_list:  /* empty */
