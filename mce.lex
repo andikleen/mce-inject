@@ -80,10 +80,8 @@ static int lookup_symbol(const char *name)
 	k = bsearch(&key, keys, ARRAY_SIZE(keys), sizeof(struct key), cmp_key);
 	if (k != NULL) { 
 		yylval = k->val;
-		printf("got %s val %lx\n", k->name, k->val);
 		return k->tok;
 	}
-	printf("SYMBOL\n");
 	return SYMBOL;
 }
 
