@@ -91,6 +91,7 @@ static void init_lex(void)
 	qsort(keys, ARRAY_SIZE(keys), sizeof(struct key), cmp_key);
 }
 
+int do_dump;
 static char **argv;
 char *filename = "<stdin>";
 
@@ -110,6 +111,10 @@ int main(int ac, char **av)
 {
 	init_lex();
 	argv = ++av;	
+ 	if (!strcmp(*av, "--dump")) {
+ 		do_dump = 1;
+ 		av++;
+ 	}
 	if (*argv)
 		yywrap();
 	return yyparse();

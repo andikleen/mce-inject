@@ -105,7 +105,7 @@ void broadcast_mce(int fd, struct mce *m)
 	}
 }
 
-void submit_mce(struct mce *m)
+void inject_mce(struct mce *m)
 {
 	int inject_fd;
 
@@ -120,6 +120,26 @@ void submit_mce(struct mce *m)
 		write_mce(inject_fd, m);
 	}
 	close(inject_fd);
+}
+
+void dump_mce(struct mce *m)
+{
+	printf("CPU %d\n", m->cpu);
+	printf("BANK %d\n", m->bank);
+	printf("TSC 0x%Lx\n", m->tsc);
+	printf("RIP 0x%02x:0x%Lx\n", m->cs, m->ip);
+	printf("MISC 0x%Lx\n", m->misc);
+	printf("ADDR 0x%Lx\n", m->addr);
+	printf("STATUS 0x%Lx\n", m->status);
+	printf("MCGSTATUS 0x%Lx\n\n", m->mcgstatus);
+}
+
+void submit_mce(struct mce *m)
+{
+	if (do_dump)
+		dump_mce(m);
+	else
+		inject_mce(m);
 }
 
 void init_mce(struct mce *m)
