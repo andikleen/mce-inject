@@ -35,6 +35,8 @@ int yylineno;
 static int lookup_symbol(const char *);
 %}
 
+%option nounput
+
 %%
 
 #.*\n			/* comment */;
