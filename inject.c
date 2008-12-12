@@ -168,8 +168,8 @@ void do_inject_mce(int fd, struct mce *m)
 	if (has_random)
 		m->inject_flags |= MCJ_NMI_BROADCAST;
 
-	/* could wait here for the threads to start up, but the kernel timeout should
-	   be long enough to catch slow ones */
+	/* could wait here for the threads to start up, but the kernel
+	   timeout should be long enough to catch slow ones */
 
 	barrier();
 	blocked = 0;
