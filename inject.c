@@ -32,11 +32,9 @@
 #include "parser.h"
 #include "util.h"
 
-#define MAX_CPU_NUM	1024
-
 static int cpu_num;
 /* map from cpu index to cpu id */
-static int cpu_map[MAX_CPU_NUM];
+static int *cpu_map;
 static struct mce **cpu_mce;
 
 void init_cpu_info(void)
@@ -44,13 +42,16 @@ void init_cpu_info(void)
 	FILE *f = fopen("/proc/cpuinfo", "r");
 	char *line = NULL;
 	size_t linesz = 0;
-
+	int max_cpu = sysconf(_SC_NPROCESSORS_CONF);
 	if (!f)
 		err("opening of /proc/cpuinfo");
 
+	cpu_map = xcalloc(sizeof(int), max_cpu);
+
 	while (getdelim(&line, &linesz, '\n', f) > 0) {
 		unsigned cpu;
-		if (sscanf(line, "processor : %u\n", &cpu) == 1)
+		if (sscanf(line, "processor : %u\n", &cpu) == 1 && 
+			cpu_num < max_cpu)
 			cpu_map[cpu_num++] = cpu;
 	}
 	free(line);
@@ -62,7 +63,7 @@ void init_cpu_info(void)
 
 void init_inject(void)
 {
-	cpu_mce = calloc(cpu_num, sizeof(struct mce *));
+	cpu_mce = xcalloc(cpu_num, sizeof(struct mce *));
 }
 
 static inline int cpu_id_to_index(int id)
