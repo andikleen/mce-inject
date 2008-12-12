@@ -57,7 +57,7 @@ void init_cpu_info(void)
 	fclose(f);
 
 	if (!cpu_num)
-		err("geting cpu ids from /proc/cpuinfo");
+		err("getting cpu ids from /proc/cpuinfo");
 }
 
 void init_inject(void)
@@ -82,7 +82,7 @@ static void write_mce(int fd, struct mce *m)
 	if (n <= 0)
 		err("Injecting mce on /dev/mcelog");
 	if (n < sizeof(struct mce)) {
-		fprintf(stderr, "Short mce write %d: kernel does not match?\n",
+		fprintf(stderr, "mce-inject: Short mce write %d: kernel does not match?\n",
 			n);
 	}
 }
