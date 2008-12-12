@@ -16,8 +16,3 @@ enum mceflags {
 };
 
 extern enum mceflags mce_flags;
-
-enum mce_context {
-	MCEC_PROCESS,
-	MCEC_IRQ,
-};

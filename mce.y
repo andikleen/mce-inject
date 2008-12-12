@@ -39,7 +39,8 @@ static void init(void);
 
 %}
 
-%token STATUS RIP TSC ADDR MISC CPU BANK MCGSTATUS NOBROADCAST HOLD IN_IRQ
+%token STATUS RIP TSC ADDR MISC CPU BANK MCGSTATUS NOBROADCAST HOLD
+%token IN_IRQ IN_PROC
 %token CORRECTED UNCORRECTED FATAL MCE
 %token NUMBER
 %token SYMBOL
@@ -82,8 +83,9 @@ mce_term:   STATUS status_list  { m.status = $2; }
      | MISC NUMBER	   { m.misc = $2; m.status |= MCI_STATUS_MISCV; } 
      | NOBROADCAST	   { mce_flags |= MCE_NOBROADCAST; } 
      | HOLD		   { mce_flags |= MCE_HOLD; }
-     | IN_IRQ		   { m.inject_flags |= MCEC_IRQ; }
-     ; 
+     | IN_IRQ		   { MCJ_CTX_SET(m.inject_flags, MCJ_CTX_IRQ); }
+     | IN_PROC		   { MCJ_CTX_SET(m.inject_flags, MCJ_CTX_PROCESS); }
+     ;
 
 mcgstatus_list:  /* empty */
      | mcgstatus_list mcgstatus { $$ = $1 | $2; } 

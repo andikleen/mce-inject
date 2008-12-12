@@ -111,7 +111,7 @@ static void *injector(void *data)
 /* Simulate machine check broadcast.  */
 void do_inject_mce(int fd, struct mce *m)
 {
-	int i;
+	int i, has_random = 0;
 	struct mce otherm;
 	struct thread *tlist = NULL;
 
@@ -130,17 +130,28 @@ void do_inject_mce(int fd, struct mce *m)
 		cpu_set_t aset;
 
 		NEW(t);
-		if (cpu == m->extcpu)
+		if (cpu == m->extcpu) {
 			t->m = m;
-		else if (cpu_mce[i])
+			if (MCJ_CTX(m->inject_flags) == MCJ_CTX_RANDOM)
+				MCJ_CTX_SET(m->inject_flags, MCJ_CTX_PROCESS);
+		} else if (cpu_mce[i])
 			t->m = cpu_mce[i];
-		else if (mce_flags & MCE_NOBROADCAST)
+		else if (mce_flags & MCE_NOBROADCAST) {
+			free(t);
 			continue;
-		else {
+		} else {
 			t->m = &t->otherm;
 			t->otherm = otherm;
 			t->otherm.cpu = t->otherm.extcpu = cpu;
 		}
+
+		if (MCJ_CTX(t->m->inject_flags) == MCJ_CTX_RANDOM) {
+			write_mce(fd, t->m);
+			has_random = 1;
+			free(t);
+			continue;
+		}
+
 		t->fd = fd;
 		t->next = tlist;
 		tlist = t;
@@ -153,6 +164,9 @@ void do_inject_mce(int fd, struct mce *m)
 		if (pthread_create(&t->thr, &attr, injector, t))
 			err("pthread_create");
 	}
+
+	if (has_random)
+		m->inject_flags |= MCJ_NMI_BROADCAST;
 
 	/* could wait here for the threads to start up, but the kernel timeout should
 	   be long enough to catch slow ones */
