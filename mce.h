@@ -1,4 +1,4 @@
-/* Taken from the v2.6.26 Linux 2.6.26-rc8 kernel source */
+/* Taken from the v2.6.26 Linux 2.6.26-rc8 kernel source + some changes */
 #ifndef _ASM_X86_MCE_H
 #define _ASM_X86_MCE_H
 
