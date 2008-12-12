@@ -133,9 +133,9 @@ int main(int ac, char **av)
 {
 	init_lex();
 	argv = ++av;
-	if (*av && !strcmp(*av, "--dump")) {
+	if (*argv && !strcmp(*argv, "--dump")) {
 		do_dump = 1;
-		av++;
+		argv++;
 	}
 	init_cpu_info();
 	init_inject();
