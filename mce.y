@@ -69,9 +69,7 @@ mce:  mce_term
      ;
 
 mce_term:   STATUS status_list  { m.status = $2; }
-     | STATUS NUMBER	   { m.status = $2; }
      | MCGSTATUS mcgstatus_list { m.mcgstatus = $2; }
-     | MCGSTATUS NUMBER	   { m.mcgstatus = $2; }
      | BANK NUMBER 	   { m.bank = $2; }
     
      | TSC NUMBER	   { m.tsc = $2; }
@@ -87,7 +85,7 @@ mce_term:   STATUS status_list  { m.status = $2; }
      | IN_PROC		   { MCJ_CTX_SET(m.inject_flags, MCJ_CTX_PROCESS); }
      ;
 
-mcgstatus_list:  /* empty */
+mcgstatus_list:  /* empty */ { $$ = 0; }
      | mcgstatus_list mcgstatus { $$ = $1 | $2; } 
      ;
 
