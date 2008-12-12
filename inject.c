@@ -93,7 +93,6 @@ struct thread {
 	struct mce *m;
 	struct mce otherm;
 	int fd;
-	int monarch;
 };
 
 volatile int blocked;
@@ -104,11 +103,6 @@ static void *injector(void *data)
 	
 	while (blocked)
 		barrier();
-
-	if (!t->monarch) {
-		int i;
-		for (i = 0; i < 1000000; i++);
-	}
 
 	write_mce(t->fd, t->m);
 	return NULL;
@@ -136,10 +130,9 @@ void do_inject_mce(int fd, struct mce *m)
 		cpu_set_t aset;
 
 		NEW(t);
-		if (cpu == m->cpu) {
+		if (cpu == m->cpu)
 			t->m = m;
-			t->monarch = 1;
-		} else if (cpu_mce[i])
+		else if (cpu_mce[i])
 			t->m = cpu_mce[i];
 		else if (mce_flags & MCE_NOBROADCAST)
 			continue;
