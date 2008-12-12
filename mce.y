@@ -53,8 +53,8 @@ static void init(void);
 input: /* empty */
      | input mce_start mce { submit_mce(&m); } ;
 
-mce_start: CPU NUMBER 	   { init(); m.cpu = $2; }
-     | CPU NUMBER NUMBER   { init(); m.cpu = $2; m.bank = $3; }
+mce_start: CPU NUMBER 	   { init(); m.cpu = m.extcpu = $2; }
+     | CPU NUMBER NUMBER   { init(); m.cpu = m.extcpu = $2; m.bank = $3; }
      | MCE		   { init(); }
      | CPU NUMBER ':'
        MACHINE CHECK EXCEPTION ':' NUMBER BANK NUMBER ':'

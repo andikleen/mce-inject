@@ -30,6 +30,19 @@
 #define MCJ_CTX_IRQ            2    /* inject context: IRQ */
 #define MCJ_NMI_BROADCAST      4    /* do NMI broadcasting */
 
+#define MCJ_CTX_MASK		3
+#define MCJ_CTX(flags)		((flags) & MCJ_CTX_MASK)
+#define MCJ_CTX_RANDOM		0    /* inject context: random */
+#define MCJ_CTX_PROCESS		1    /* inject context: process */
+#define MCJ_CTX_IRQ		2    /* inject context: IRQ */
+#define MCJ_NMI_BROADCAST	4    /* do NMI broadcasting */
+
+#define MCJ_CTX_SET(flags, ctx)				\
+	do {						\
+		(flags) &= ~MCJ_CTX_MASK;		\
+		(flags) |= ((ctx) & MCJ_CTX_MASK);	\
+	} while (0)
+
 /* Fields are zero when not available */
 struct mce {
 	__u64 status;
@@ -64,7 +77,7 @@ struct mce_log {
 	unsigned len;	    /* = MCE_LOG_LEN */
 	unsigned next;
 	unsigned flags;
-	unsigned pad0;
+	unsigned recordlen;	/* length of struct mce */
 	struct mce entry[MCE_LOG_LEN];
 };
 

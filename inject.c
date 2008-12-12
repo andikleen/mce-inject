@@ -130,7 +130,7 @@ void do_inject_mce(int fd, struct mce *m)
 		cpu_set_t aset;
 
 		NEW(t);
-		if (cpu == m->cpu)
+		if (cpu == m->extcpu)
 			t->m = m;
 		else if (cpu_mce[i])
 			t->m = cpu_mce[i];
@@ -139,7 +139,7 @@ void do_inject_mce(int fd, struct mce *m)
 		else {
 			t->m = &t->otherm;
 			t->otherm = otherm;
-			t->otherm.cpu = cpu;
+			t->otherm.cpu = t->otherm.extcpu = cpu;
 		}
 		t->fd = fd;
 		t->next = tlist;
@@ -173,7 +173,7 @@ void inject_mce(struct mce *m)
 	int inject_fd;
 
 	if (mce_flags & MCE_HOLD) {
-		int cpu_index = cpu_id_to_index(m->cpu);
+		int cpu_index = cpu_id_to_index(m->extcpu);
 		struct mce *nm;
 		NEW(nm);
 		*nm = *m;
@@ -192,7 +192,7 @@ void inject_mce(struct mce *m)
 
 void dump_mce(struct mce *m)
 {
-	printf("CPU %d\n", m->cpu);
+	printf("CPU %d\n", m->extcpu);
 	printf("BANK %d\n", m->bank);
 	printf("TSC 0x%Lx\n", m->tsc);
 	printf("RIP 0x%02x:0x%Lx\n", m->cs, m->ip);
