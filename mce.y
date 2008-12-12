@@ -1,5 +1,5 @@
 /* Copyright (c) 2008 by Intel Corp.
-   Grammar for machine check injection. Follows the format printed out 
+   Grammar for machine check injection. Follows the format printed out
    by the kernel on panics with some extensions.  See SPEC.
 
    mce-inject is free software; you can redistribute it and/or
@@ -37,7 +37,7 @@ enum mceflags mce_flags;
 
 static void init(void);
 
-%} 
+%}
 
 %token STATUS RIP TSC ADDR MISC CPU BANK MCGSTATUS NOBROADCAST HOLD IN_IRQ
 %token CORRECTED UNCORRECTED FATAL MCE
@@ -45,21 +45,21 @@ static void init(void);
 %token SYMBOL
 %token MACHINE CHECK EXCEPTION
 
-%token RIPV EIPV MCIP 
+%token RIPV EIPV MCIP
 %token VAL OVER UC EN PCC
 
 %%
 
-input: /* empty */ 
+input: /* empty */
      | input mce_start mce { submit_mce(&m); } ;
 
 mce_start: CPU NUMBER 	   { init(); m.cpu = $2; }
      | CPU NUMBER NUMBER   { init(); m.cpu = $2; m.bank = $3; }
-     | MCE		   { init(); } 
+     | MCE		   { init(); }
      | CPU NUMBER ':'
-       MACHINE CHECK EXCEPTION ':' NUMBER BANK NUMBER ':' 
+       MACHINE CHECK EXCEPTION ':' NUMBER BANK NUMBER ':'
        NUMBER 		   { init();
-			     m.cpu = $2; m.mcgstatus = $6; 
+			     m.cpu = $2; m.mcgstatus = $6;
 			     m.bank = $8; m.status = $10; }
      ;
 
@@ -116,4 +116,3 @@ void yyerror(char const *msg, ...)
 	va_end(ap);
 	exit(1);
 }
-

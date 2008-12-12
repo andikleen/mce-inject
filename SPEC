@@ -24,7 +24,7 @@ described there.
 
 The keywords are case-insensitive
 
-The machine check always starts with 
+The machine check always starts with
 
 MCE
 
@@ -34,7 +34,7 @@ CPU number|broadcast [bank-number]
 	Machine check is injected on CPU xx or broadcasted to all CPUs
 
 BANK bank-number
-STATUS {number|fatal|corrected|uncorrected|pcc|uc|val|en|over} 
+STATUS {number|fatal|corrected|uncorrected|pcc|uc|val|en|over}
 MCGSTATUS {number|mcip|ripv|eipv}
 ADDR number
 RIP number
@@ -61,11 +61,10 @@ multiple fields can be on a line
 
 number can be hex/octal/decimal in the usual C format.
 
-Multiple machine checks can be in a single file, each new one 
+Multiple machine checks can be in a single file, each new one
 starts with "CPU" or "MCE"
 
 For all missing fields reasonable default values are filled in
 (hopefully)
 
 Comments start with # until the end of the line
-

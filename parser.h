@@ -10,7 +10,7 @@ extern int yylex(void);
 extern int yyparse(void);
 extern char *filename;
 
-enum mceflags { 
+enum mceflags {
 	MCE_NOBROADCAST = (1 << 0),
 	MCE_HOLD = (1 << 1),
 };

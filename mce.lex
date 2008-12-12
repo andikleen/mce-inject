@@ -19,7 +19,7 @@
         Andi Kleen
 	Ying Huang
 */
-%{ 
+%{
 #define _GNU_SOURCE 1
 #include <stdlib.h>
 #include <string.h>
@@ -39,7 +39,7 @@ static int lookup_symbol(const char *);
 
 #.*\n			/* comment */;
 \n			++yylineno;
-0x[0-9a-fA-F]+ 		| 
+0x[0-9a-fA-F]+ 		|
 0[0-7]+			|
 [0-9]+			yylval = strtoull(yytext, NULL, 0); return NUMBER;
 [:{}<>]			return yytext[0];
@@ -51,40 +51,40 @@ static int lookup_symbol(const char *);
 
 /* Keyword handling */
 
-static struct key { 
+static struct key {
 	const char *name;
 	int tok;
 	u64 val;
-} keys[] = { 
+} keys[] = {
 #define KEY(x) { #x, x }
 #define KEYVAL(x,v) { #x, x, v }
 	KEY(MCE),
-	KEY(STATUS), 
-	KEY(RIP), 
-	KEY(TSC), 
-	KEY(ADDR), 
-	KEY(MISC), 
-	KEY(CPU), 
-	KEY(BANK), 
-	KEY(MCGSTATUS), 
-	KEY(NOBROADCAST), 
+	KEY(STATUS),
+	KEY(RIP),
+	KEY(TSC),
+	KEY(ADDR),
+	KEY(MISC),
+	KEY(CPU),
+	KEY(BANK),
+	KEY(MCGSTATUS),
+	KEY(NOBROADCAST),
 	KEY(HOLD),
 	KEY(IN_IRQ),
 	KEYVAL(CORRECTED, MCI_STATUS_VAL), 	// checkme
 	KEYVAL(UNCORRECTED, MCI_STATUS_VAL|MCI_STATUS_UC|MCI_STATUS_EN),
 	KEYVAL(FATAL, MCI_STATUS_VAL|MCI_STATUS_UC|MCI_STATUS_EN
 	       |MCI_STATUS_PCC),
-	KEY(MACHINE), 
-	KEY(CHECK), 
-	KEY(EXCEPTION), 
-	KEYVAL(RIPV, MCG_STATUS_RIPV), 
-	KEYVAL(EIPV, MCG_STATUS_EIPV), 
-	KEYVAL(MCIP, MCG_STATUS_MCIP), 
-	KEYVAL(VAL, MCI_STATUS_VAL), 
-	KEYVAL(OVER, MCI_STATUS_OVER), 
-	KEYVAL(UC, MCI_STATUS_UC), 
-	KEYVAL(EN, MCI_STATUS_EN), 
-	KEYVAL(PCC, MCI_STATUS_PCC), 
+	KEY(MACHINE),
+	KEY(CHECK),
+	KEY(EXCEPTION),
+	KEYVAL(RIPV, MCG_STATUS_RIPV),
+	KEYVAL(EIPV, MCG_STATUS_EIPV),
+	KEYVAL(MCIP, MCG_STATUS_MCIP),
+	KEYVAL(VAL, MCI_STATUS_VAL),
+	KEYVAL(OVER, MCI_STATUS_OVER),
+	KEYVAL(UC, MCI_STATUS_UC),
+	KEYVAL(EN, MCI_STATUS_EN),
+	KEYVAL(PCC, MCI_STATUS_PCC),
 };
 
 static int cmp_key(const void *av, const void *bv)
@@ -94,13 +94,13 @@ static int cmp_key(const void *av, const void *bv)
 	return strcasecmp(a->name, b->name);
 }
 
-static int lookup_symbol(const char *name) 
+static int lookup_symbol(const char *name)
 {
 	struct key *k;
 	struct key key;
 	key.name = name;
 	k = bsearch(&key, keys, ARRAY_SIZE(keys), sizeof(struct key), cmp_key);
-	if (k != NULL) { 
+	if (k != NULL) {
 		yylval = k->val;
 		return k->tok;
 	}
@@ -131,15 +131,14 @@ int yywrap(void)
 int main(int ac, char **av)
 {
 	init_lex();
-	argv = ++av;	
- 	if (*av && !strcmp(*av, "--dump")) {
- 		do_dump = 1;
- 		av++;
- 	}
- 	init_cpu_info();
- 	init_inject();
+	argv = ++av;
+	if (*av && !strcmp(*av, "--dump")) {
+		do_dump = 1;
+		av++;
+	}
+	init_cpu_info();
+	init_inject();
 	if (*argv)
 		yywrap();
 	return yyparse();
 }
-

@@ -79,15 +79,15 @@ static inline int cpu_id_to_index(int id)
 static void write_mce(int fd, struct mce *m)
 {
 	int n = write(fd, m, sizeof(struct mce));
-	if (n <= 0) 
+	if (n <= 0)
 		err("Injecting mce on /dev/mcelog");
-	if (n < sizeof(struct mce)) { 
+	if (n < sizeof(struct mce)) {
 		fprintf(stderr, "Short mce write %d: kernel does not match?\n",
 			n);
 	}
 }
 
-struct thread { 	
+struct thread {
 	struct thread *next;
 	pthread_t thr;
 	struct mce *m;
@@ -129,37 +129,37 @@ void do_inject_mce(int fd, struct mce *m)
 	blocked = 1;
 	barrier();
 
- 	for (i = 0; i < cpu_num; i++) {
- 		unsigned cpu = cpu_map[i];
- 		struct thread *t;
- 		pthread_attr_t attr;
- 		cpu_set_t aset;
- 
- 		NEW(t);
- 		if (cpu == m->cpu) {
- 			t->m = m;
- 			t->monarch = 1;
- 		} else if (cpu_mce[i])
- 			t->m = cpu_mce[i];
- 		else if (mce_flags & MCE_NOBROADCAST)
- 			continue;
- 		else {
- 			t->m = &t->otherm;
-  			t->otherm = otherm;
-  			t->otherm.cpu = cpu;
-  		}
- 		t->fd = fd;
- 		t->next = tlist;
- 		tlist = t;
- 
- 		pthread_attr_init(&attr);
- 		CPU_ZERO(&aset);
- 		CPU_SET(cpu, &aset);
- 		if (pthread_attr_setaffinity_np(&attr, sizeof(aset), &aset))
- 			err("pthread_attr_setaffinity");
- 		if (pthread_create(&t->thr, &attr, injector, t))
- 			err("pthread_create");
-  	}
+	for (i = 0; i < cpu_num; i++) {
+		unsigned cpu = cpu_map[i];
+		struct thread *t;
+		pthread_attr_t attr;
+		cpu_set_t aset;
+
+		NEW(t);
+		if (cpu == m->cpu) {
+			t->m = m;
+			t->monarch = 1;
+		} else if (cpu_mce[i])
+			t->m = cpu_mce[i];
+		else if (mce_flags & MCE_NOBROADCAST)
+			continue;
+		else {
+			t->m = &t->otherm;
+			t->otherm = otherm;
+			t->otherm.cpu = cpu;
+		}
+		t->fd = fd;
+		t->next = tlist;
+		tlist = t;
+
+		pthread_attr_init(&attr);
+		CPU_ZERO(&aset);
+		CPU_SET(cpu, &aset);
+		if (pthread_attr_setaffinity_np(&attr, sizeof(aset), &aset))
+			err("pthread_attr_setaffinity");
+		if (pthread_create(&t->thr, &attr, injector, t))
+			err("pthread_create");
+	}
 
 	/* could wait here for the threads to start up, but the kernel timeout should
 	   be long enough to catch slow ones */
@@ -167,7 +167,7 @@ void do_inject_mce(int fd, struct mce *m)
 	barrier();
 	blocked = 0;
 
-	while (tlist) { 
+	while (tlist) {
 		struct thread *next = tlist->next;
 		pthread_join(tlist->thr, NULL);
 		free(tlist);
@@ -189,7 +189,7 @@ void inject_mce(struct mce *m)
 	}
 
 	inject_fd = open("/dev/mcelog", O_RDWR);
-	if (inject_fd < 0) 
+	if (inject_fd < 0)
 		err("opening of /dev/mcelog");
 	if (!(m->status & MCI_STATUS_UC))
 		mce_flags |= MCE_NOBROADCAST;
@@ -221,4 +221,3 @@ void init_mce(struct mce *m)
 {
 	memset(m, 0, sizeof(struct mce));
 }
-

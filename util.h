@@ -9,4 +9,3 @@ void *xalloc(size_t sz);
 #else
 #define barrier() do {} while(0)
 #endif
-
