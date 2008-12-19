@@ -210,11 +210,13 @@ void dump_mce(struct mce *m)
 	printf("CPU %d\n", m->extcpu);
 	printf("BANK %d\n", m->bank);
 	printf("TSC 0x%Lx\n", m->tsc);
+	printf("TIME %Lu\n", m->time);
 	printf("RIP 0x%02x:0x%Lx\n", m->cs, m->ip);
 	printf("MISC 0x%Lx\n", m->misc);
 	printf("ADDR 0x%Lx\n", m->addr);
 	printf("STATUS 0x%Lx\n", m->status);
-	printf("MCGSTATUS 0x%Lx\n\n", m->mcgstatus);
+	printf("MCGSTATUS 0x%Lx\n", m->mcgstatus);
+	printf("PROCESSOR %u:0x%x\n\n", m->cpuvendor, m->cpuid);
 }
 
 void submit_mce(struct mce *m)
