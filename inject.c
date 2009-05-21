@@ -119,6 +119,8 @@ void do_inject_mce(int fd, struct mce *m)
 	memset(&otherm, 0, sizeof(struct mce));
 	// make sure to trigger exception on the secondaries
 	otherm.mcgstatus = m->mcgstatus & MCG_STATUS_MCIP;
+	if (m->status & MCI_STATUS_UC)
+		otherm.mcgstatus |= MCG_STATUS_RIPV;
 	otherm.status = m->status & MCI_STATUS_UC;
 
 	blocked = 1;
