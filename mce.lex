@@ -118,6 +118,7 @@ static void init_lex(void)
 }
 
 int do_dump;
+int no_random;
 static char **argv;
 char *filename = "<stdin>";
 
@@ -139,6 +140,10 @@ int main(int ac, char **av)
 	argv = ++av;
 	if (*argv && !strcmp(*argv, "--dump")) {
 		do_dump = 1;
+		argv++;
+	}
+	if (*argv && !strcmp(*argv, "--no-random")) {
+		no_random = 1;
 		argv++;
 	}
 	init_cpu_info();

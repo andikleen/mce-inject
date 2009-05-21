@@ -148,7 +148,9 @@ void do_inject_mce(int fd, struct mce *m)
 			t->otherm.cpu = t->otherm.extcpu = cpu;
 		}
 
-		if (MCJ_CTX(t->m->inject_flags) == MCJ_CTX_RANDOM) {
+		if (no_random && MCJ_CTX(t->m->inject_flags) == MCJ_CTX_RANDOM)
+			MCJ_CTX_SET(t->m->inject_flags, MCJ_CTX_PROCESS);
+		else if (MCJ_CTX(t->m->inject_flags) == MCJ_CTX_RANDOM) {
 			write_mce(fd, t->m);
 			has_random = 1;
 			free(t);

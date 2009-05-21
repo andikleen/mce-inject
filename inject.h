@@ -1,6 +1,7 @@
 struct mce;
 
 extern int do_dump;
+extern int no_random;
 
 void init_cpu_info(void);
 void init_inject(void);
