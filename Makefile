@@ -1,21 +1,25 @@
+prefix := 
 CFLAGS := -g -Wall
 LDFLAGS += -lpthread
 
-OBJ := mce.tab.o lex.yy.o inject.o util.o
+OBJ := mce.tab.o lex.yy.o mce-inject.o util.o
 GENSRC := mce.tab.c mce.tab.h lex.yy.c
-SRC := inject.c util.c
-CLEAN := ${OBJ} ${GENSRC} inject .gdb_history .depend
+SRC := mce-inject.c util.c
+CLEAN := ${OBJ} ${GENSRC} inject mce-inject .gdb_history .depend
 DISTCLEAN := .depend .gdb_history
 
-.PHONY: clean depend
+.PHONY: clean depend install
 
-inject: ${OBJ}
+mce-inject: ${OBJ}
 
 lex.yy.c: mce.lex mce.tab.h
 	flex mce.lex
 	
 mce.tab.c mce.tab.h: mce.y
 	bison -d mce.y
+
+install:
+	install -m 755 mce-inject $(prefix)/sbin/mce-inject
 
 clean:
 	rm -f ${CLEAN}
