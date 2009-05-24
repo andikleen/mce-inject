@@ -5,7 +5,7 @@ LDFLAGS += -lpthread
 OBJ := mce.tab.o lex.yy.o mce-inject.o util.o
 GENSRC := mce.tab.c mce.tab.h lex.yy.c
 SRC := mce-inject.c util.c
-CLEAN := ${OBJ} ${GENSRC} inject mce-inject .gdb_history .depend
+CLEAN := ${OBJ} ${GENSRC} inject mce-inject .depend
 DISTCLEAN := .depend .gdb_history
 
 .PHONY: clean depend install
