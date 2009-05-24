@@ -1,5 +1,5 @@
 prefix := 
-CFLAGS := -g -Wall
+CFLAGS := -Os -g -Wall
 LDFLAGS += -lpthread
 
 OBJ := mce.tab.o lex.yy.o mce-inject.o util.o
