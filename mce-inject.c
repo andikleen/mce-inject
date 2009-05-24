@@ -26,6 +26,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <sched.h>
 
 #include "mce.h"
 #include "inject.h"
@@ -94,6 +95,7 @@ struct thread {
 	struct mce *m;
 	struct mce otherm;
 	int fd;
+	int cpu;
 };
 
 volatile int blocked;
@@ -101,6 +103,11 @@ volatile int blocked;
 static void *injector(void *data)
 {
 	struct thread *t = (struct thread *)data;
+	cpu_set_t aset;
+
+	CPU_ZERO(&aset);
+	CPU_SET(t->cpu, &aset);
+	sched_setaffinity(0, sizeof(aset), &aset);
 	
 	while (blocked)
 		barrier();
@@ -129,8 +136,6 @@ void do_inject_mce(int fd, struct mce *m)
 	for (i = 0; i < cpu_num; i++) {
 		unsigned cpu = cpu_map[i];
 		struct thread *t;
-		pthread_attr_t attr;
-		cpu_set_t aset;
 
 		NEW(t);
 		if (cpu == m->extcpu) {
@@ -161,12 +166,9 @@ void do_inject_mce(int fd, struct mce *m)
 		t->next = tlist;
 		tlist = t;
 
-		pthread_attr_init(&attr);
-		CPU_ZERO(&aset);
-		CPU_SET(cpu, &aset);
-		if (pthread_attr_setaffinity_np(&attr, sizeof(aset), &aset))
-			err("pthread_attr_setaffinity");
-		if (pthread_create(&t->thr, &attr, injector, t))
+		t->cpu = cpu;
+
+		if (pthread_create(&t->thr, NULL, injector, t))
 			err("pthread_create");
 	}
 
