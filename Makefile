@@ -1,4 +1,5 @@
 prefix := 
+manprefix := /usr/share
 CFLAGS := -Os -g -Wall
 LDFLAGS += -lpthread
 
@@ -20,6 +21,7 @@ mce.tab.c mce.tab.h: mce.y
 
 install:
 	install -m 755 mce-inject $(prefix)/sbin/mce-inject
+	install -m 644 mce-inject.8 $(manprefix)/man/man8/mce-inject.8
 
 clean:
 	rm -f ${CLEAN}
