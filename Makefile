@@ -1,5 +1,5 @@
-prefix := 
-manprefix := /usr/share
+prefix := /usr
+manprefix := ${prefix}/share
 CFLAGS := -Os -g -Wall
 LDFLAGS += -lpthread
 
