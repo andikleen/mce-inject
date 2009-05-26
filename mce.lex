@@ -90,6 +90,11 @@ static struct key {
 	KEYVAL(UC, MCI_STATUS_UC),
 	KEYVAL(EN, MCI_STATUS_EN),
 	KEYVAL(PCC, MCI_STATUS_PCC),
+	KEYVAL(S, MCI_STATUS_S),
+	KEYVAL(AR, MCI_STATUS_AR),
+	KEYVAL(UCNA, 0),
+	KEYVAL(SRAO, MCI_STATUS_S),
+	KEYVAL(SRAR, MCI_STATUS_S|MCI_STATUS_AR),
 };
 
 static int cmp_key(const void *av, const void *bv)

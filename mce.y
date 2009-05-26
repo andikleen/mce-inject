@@ -47,7 +47,7 @@ static void init(void);
 %token MACHINE CHECK EXCEPTION
 
 %token RIPV EIPV MCIP
-%token VAL OVER UC EN PCC
+%token VAL OVER UC EN PCC S AR UCNA SRAO SRAR
 
 %%
 
@@ -97,7 +97,7 @@ status_list: 	 /* empty */ { $$ = 0; }
      | status_list status { $$ = $1 | $2; } 
 
 status: UC | EN | VAL | OVER | PCC | NUMBER | CORRECTED | UNCORRECTED | 
-     FATAL
+     FATAL | S | AR | UCNA | SRAO | SRAR
      ; 
 
 %% 

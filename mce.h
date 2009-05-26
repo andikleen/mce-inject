@@ -22,13 +22,15 @@
 #define MCI_STATUS_MISCV (1ULL<<59)  /* misc error reg. valid */
 #define MCI_STATUS_ADDRV (1ULL<<58)  /* addr reg. valid */
 #define MCI_STATUS_PCC   (1ULL<<57)  /* processor context corrupt */
+#define MCI_STATUS_S	 (1ULL<<56)  /* Signaled machine check */
+#define MCI_STATUS_AR	 (1ULL<<55)  /* Action required */
 
-#define MCJ_CTX_MASK           3
-#define MCJ_CTX(flags)         ((flags) & MCJ_CTX_MASK)
-#define MCJ_CTX_RANDOM         0    /* inject context: random */
-#define MCJ_CTX_PROCESS        1    /* inject context: process */
-#define MCJ_CTX_IRQ            2    /* inject context: IRQ */
-#define MCJ_NMI_BROADCAST      4    /* do NMI broadcasting */
+/* MISC register defines */
+#define MCM_ADDR_SEGOFF  0	/* segment offset */
+#define MCM_ADDR_LINEAR  1	/* linear address */
+#define MCM_ADDR_PHYS	 2	/* physical address */
+#define MCM_ADDR_MEM	 3	/* memory address */
+#define MCM_ADDR_GENERIC 7	/* generic */
 
 #define MCJ_CTX_MASK		3
 #define MCJ_CTX(flags)		((flags) & MCJ_CTX_MASK)
