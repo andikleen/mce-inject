@@ -41,6 +41,7 @@ static void init(void);
 
 %token STATUS RIP TSC ADDR MISC CPU BANK MCGSTATUS NOBROADCAST HOLD
 %token IN_IRQ IN_PROC PROCESSOR TIME SOCKETID APICID MCGCAP
+%token POLL EXCP
 %token CORRECTED UNCORRECTED FATAL MCE
 %token NUMBER
 %token SYMBOL
@@ -88,6 +89,10 @@ mce_term:   STATUS status_list  { m.status = $2; }
      | HOLD		   { mce_flags |= MCE_HOLD; }
      | IN_IRQ		   { MCJ_CTX_SET(m.inject_flags, MCJ_CTX_IRQ); }
      | IN_PROC		   { MCJ_CTX_SET(m.inject_flags, MCJ_CTX_PROCESS); }
+     | POLL		   { mce_flags |= MCE_RAISE_MODE;
+			     m.inject_flags &= ~MCJ_EXCEPTION; }
+     | EXCP		   { mce_flags |= MCE_RAISE_MODE;
+			     m.inject_flags |= MCJ_EXCEPTION; }
      ;
 
 mcgstatus_list:  /* empty */ { $$ = 0; }

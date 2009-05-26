@@ -129,6 +129,7 @@ void do_inject_mce(int fd, struct mce *m)
 	if (m->status & MCI_STATUS_UC)
 		otherm.mcgstatus |= MCG_STATUS_RIPV;
 	otherm.status = m->status & MCI_STATUS_UC;
+	otherm.inject_flags |= MCJ_EXCEPTION;
 
 	blocked = 1;
 	barrier();
@@ -193,6 +194,12 @@ void inject_mce(struct mce *m)
 {
 	int inject_fd;
 
+	if (!(mce_flags & MCE_RAISE_MODE)) {
+		if (m->status & MCI_STATUS_UC)
+			m->inject_flags |= MCJ_EXCEPTION;
+		else
+			m->inject_flags &= ~MCJ_EXCEPTION;
+	}
 	if (mce_flags & MCE_HOLD) {
 		int cpu_index = cpu_id_to_index(m->extcpu);
 		struct mce *nm;
@@ -205,7 +212,7 @@ void inject_mce(struct mce *m)
 	inject_fd = open("/dev/mcelog", O_RDWR);
 	if (inject_fd < 0)
 		err("opening of /dev/mcelog");
-	if (!(m->status & MCI_STATUS_UC))
+	if (!(m->inject_flags & MCJ_EXCEPTION))
 		mce_flags |= MCE_NOBROADCAST;
 	do_inject_mce(inject_fd, m);
 	close(inject_fd);
