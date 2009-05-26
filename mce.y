@@ -40,7 +40,7 @@ static void init(void);
 %}
 
 %token STATUS RIP TSC ADDR MISC CPU BANK MCGSTATUS NOBROADCAST HOLD
-%token IN_IRQ IN_PROC PROCESSOR TIME
+%token IN_IRQ IN_PROC PROCESSOR TIME SOCKETID APICID MCGCAP
 %token CORRECTED UNCORRECTED FATAL MCE
 %token NUMBER
 %token SYMBOL
@@ -74,6 +74,9 @@ mce_term:   STATUS status_list  { m.status = $2; }
     
      | TSC NUMBER	   { m.tsc = $2; }
      | TIME NUMBER	   { m.time = $2; }
+     | SOCKETID NUMBER	   { m.socketid = $2; }
+     | APICID NUMBER	   { m.apicid = $2; }
+     | MCGCAP NUMBER	   { m.mcgcap = $2; }
      | RIP NUMBER 	   { m.ip = $2; } 
      | RIP NUMBER ':' NUMBER { m.ip = $4; m.cs = $2; }
      | RIP NUMBER ':' '<' NUMBER '>' '{' SYMBOL '}' 

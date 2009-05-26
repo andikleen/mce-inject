@@ -63,6 +63,9 @@ struct mce {
 	__u8  cpu;	/* cpu that raised the error */
 	__u8  finished;   /* entry is valid */
 	__u32 extcpu;	/* extended CPU number */
+	__u32 socketid;	/* CPU socket ID */
+	__u32 apicid;	/* CPU initial apic ID */
+	__u64 mcgcap;	/* MCGCAP MSR: machine check capabilities of CPU */
 };
 
 /*
