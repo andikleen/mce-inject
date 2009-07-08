@@ -69,10 +69,8 @@ void init_inject(void)
 
 void clean_inject(void)
 {
-	if (cpu_mce)
-		free(cpu_mce);
-	if (cpu_map)
-		free(cpu_map);
+	free(cpu_mce);
+	free(cpu_map);
 }
 
 static inline int cpu_id_to_index(int id)
@@ -214,8 +212,7 @@ void inject_mce(struct mce *m)
 
 		NEW(nm);
 		*nm = *m;
-		if (cpu_mce[cpu_index])
-			free(cpu_mce[cpu_index]);
+		free(cpu_mce[cpu_index]);
 		cpu_mce[cpu_index] = nm;
 		return;
 	}
