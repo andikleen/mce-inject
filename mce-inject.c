@@ -67,6 +67,14 @@ void init_inject(void)
 	cpu_mce = xcalloc(cpu_num, sizeof(struct mce *));
 }
 
+void clean_inject(void)
+{
+	if (cpu_mce)
+		free(cpu_mce);
+	if (cpu_map)
+		free(cpu_map);
+}
+
 static inline int cpu_id_to_index(int id)
 {
 	int i;
@@ -192,7 +200,7 @@ void do_inject_mce(int fd, struct mce *m)
 
 void inject_mce(struct mce *m)
 {
-	int inject_fd;
+	int i, inject_fd;
 
 	if (!(mce_flags & MCE_RAISE_MODE)) {
 		if (m->status & MCI_STATUS_UC)
@@ -203,8 +211,11 @@ void inject_mce(struct mce *m)
 	if (mce_flags & MCE_HOLD) {
 		int cpu_index = cpu_id_to_index(m->extcpu);
 		struct mce *nm;
+
 		NEW(nm);
 		*nm = *m;
+		if (cpu_mce[cpu_index])
+			free(cpu_mce[cpu_index]);
 		cpu_mce[cpu_index] = nm;
 		return;
 	}
@@ -215,6 +226,13 @@ void inject_mce(struct mce *m)
 	if (!(m->inject_flags & MCJ_EXCEPTION))
 		mce_flags |= MCE_NOBROADCAST;
 	do_inject_mce(inject_fd, m);
+
+	for (i = 0; i < cpu_num; i++) {
+		if (cpu_mce[i]) {
+			free(cpu_mce[i]);
+			cpu_mce[i] = NULL;
+		}
+	}
 	close(inject_fd);
 }
 

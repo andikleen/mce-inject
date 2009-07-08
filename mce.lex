@@ -146,6 +146,8 @@ int yywrap(void)
 
 int main(int ac, char **av)
 {
+	int rc = 0;
+
 	init_lex();
 	argv = ++av;
 	if (*argv && !strcmp(*argv, "--dump")) {
@@ -160,5 +162,8 @@ int main(int ac, char **av)
 	init_inject();
 	if (*argv)
 		yywrap();
-	return yyparse();
+	rc = yyparse();
+	clean_inject();
+
+	return rc;
 }
