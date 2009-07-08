@@ -1,6 +1,7 @@
 /* Copyright (c) 2008 by Intel Corp.
    Grammar for machine check injection. Follows the format printed out
-   by the kernel on panics with some extensions.  See SPEC.
+   by the kernel on panics with some extensions.  See manpage for rough
+   spec.
 
    mce-inject is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public
