@@ -30,10 +30,19 @@ or
 Machine check is injected on CPU xx or broadcasted to all CPUs
 
 .I BANK bank-number
+Machine check bank to inject on.
 
-.I STATUS {number|fatal|corrected|uncorrected|pcc|uc|val|en|over}
+.I STATUS {number|fatal|corrected|uncorrected|pcc|uc|val|en|over|ar|ucna|srao|srar|s}
+
+The symbols generally represent hardware register bits, as documented in the Intel
+software developer's manual. 
+When multiple are listed they are ored together.
 
 .I MCGSTATUS {number|mcip|ripv|eipv}
+
+The symbols generally represent hardware register bits, as documented in the Intel
+software developer's manual. 
+When multiple are listed they are ored together.
 
 .I ADDR number
 
@@ -77,7 +86,11 @@ Inject as machine check exception.
 .I APICID number
 APIC ID of CPU. Ignored by kernel on injection.
 
-multiple fields can be on a line.
+A list of symbols ors the symbols together.
+
+.TE
+
+Multiple fields can be on a line.
 number can be hex/octal/decimal in the usual C format.
 Multiple machine checks can be in a single file, each new one
 starts with "CPU" or "MCE".
