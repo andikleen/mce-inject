@@ -33,6 +33,8 @@
 int yylineno;
 
 static int lookup_symbol(const char *);
+
+#define YY_NO_INPUT 1
 %}
 
 %option nounput
