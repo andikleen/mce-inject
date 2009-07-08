@@ -64,7 +64,8 @@ Comments start with # until the end of the line
 mce-inject to run as root. /dev/mcelog has to exist. The kernels needs
 to have machine check injection (
 .I CONFIG_X86_MCE_INJECT
-) enabled.
+) enabled and if modular the mce-inject module loaded. This option is 
+available in Linux 2.6.31 or later.
 .SH NOTES
 The 
 .I mce-test
