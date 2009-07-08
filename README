@@ -4,21 +4,23 @@ validation of the kernel machine check handler.
 
 Syntax:
 
-mce-inject file ..
+mce-inject input-file ..
 
-See SPEC for the input language
+See the manpage for the input language
 
 Some simple tests are in test/*.
+
 Warning: some of them will panic the machine (this is intended)
 
-Requires a new Linux kernel with error injection patches.
-The error injection patches are currently available from
-git://git.kernel.org/pub/scm/linux/kernel/git/ak/linux-mce-2.6.git test
+Requires a Linux 2.6.31+ kernel with CONFIG_X86_MCE_INJECT 
+enabled and the mce-inject module loaded (if not built in)
 
-A more comprehensive test suite testing more machine check features
-is available in mce-test
+The official git tree for this project is on
 git://git.kernel.org/pub/scm/utils/cpu/mce/mce-inject.git
 
+A more comprehensive test suite testing much more machine check features
+using this program is available in mce-test
+git://git.kernel.org/pub/scm/utils/cpu/mce/mce-test.git
 
 Authors:
 
