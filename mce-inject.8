@@ -19,21 +19,27 @@ See the IA32 SDM Vol3a chapter 14 for the details on fields. They correspond
 to the machine check MSRs of the standard IA32 Machine check architecture
 described there.
 .SH INPUT LANGUAGE
+These generally represent the similarly CPU MSRs, with some
+metadata on where to inject the exception. Please see 
+the IA software developers Manual for more details.
+
 The machine check always starts with
 .I MCE
 or
 .I CPU number|broadcast [bank-number]
 Machine check is injected on CPU xx or broadcasted to all CPUs
 
-BANK bank-number
+.I BANK bank-number
 
-STATUS {number|fatal|corrected|uncorrected|pcc|uc|val|en|over}
+.I STATUS {number|fatal|corrected|uncorrected|pcc|uc|val|en|over}
 
 .I MCGSTATUS {number|mcip|ripv|eipv}
 
 .I ADDR number
 
 .I RIP number
+.I RIP number:<number>{string}
+.I RIP number:number
 
 .I MISC number
 
@@ -47,11 +53,29 @@ TSC state injected in machine check
 Don't broadcast exceptions to all CPUs. Default is to broadcast UC
 
 .I IN_IRQ
-MCE should be injected in IRQ context
+MCE should be injected in interrupt context
+
+.I IN_PROC
+MCE injected in process context.
 
 .I HOLD
 Don't inject MCE immediately but hold it for later injection. This is useful 
 for testing injection on multiple CPUs in parallel
+
+.I SOCKETID number
+Socketid. Ignored by kernel on injection.
+
+.I MCGCAP number
+Machine check capabilities register value. Currently ignored by kernel on injection.
+
+.I POLL
+Inject in machine check poller code.
+
+.I EXCP
+Inject as machine check exception.
+
+.I APICID number
+APIC ID of CPU. Ignored by kernel on injection.
 
 multiple fields can be on a line.
 number can be hex/octal/decimal in the usual C format.
