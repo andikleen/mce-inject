@@ -84,6 +84,11 @@ static inline int cpu_id_to_index(int id)
 	return -1;
 }
 
+static void validate_mce(struct mce *m)
+{
+	cpu_id_to_index(m->extcpu);
+}
+
 static void write_mce(int fd, struct mce *m)
 {
 	int n = write(fd, m, sizeof(struct mce));
@@ -200,6 +205,7 @@ void inject_mce(struct mce *m)
 {
 	int i, inject_fd;
 
+	validate_mce(m);
 	if (!(mce_flags & MCE_RAISE_MODE)) {
 		if (m->status & MCI_STATUS_UC)
 			m->inject_flags |= MCJ_EXCEPTION;
