@@ -20,8 +20,10 @@ mce.tab.c mce.tab.h: mce.y
 	bison -d mce.y
 
 install:
-	install -m 755 mce-inject $(prefix)/sbin/mce-inject
-	install -m 644 mce-inject.8 $(manprefix)/man/man8/mce-inject.8
+	install -d $(destdir)$(prefix)/sbin
+	install -m 755 mce-inject $(destdir)$(prefix)/sbin/mce-inject
+	install -d $(destdir)$(manprefix)/man/man8
+	install -m 644 mce-inject.8 $(destdir)$(manprefix)/man/man8/mce-inject.8
 
 clean:
 	rm -f ${CLEAN}
