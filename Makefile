@@ -19,7 +19,7 @@ lex.yy.c: mce.lex mce.tab.h
 mce.tab.c mce.tab.h: mce.y
 	bison -d mce.y
 
-install: mce-inject
+install: mce-inject mce-inject.8
 	install -d $(destdir)$(prefix)/sbin
 	install -m 755 mce-inject $(destdir)$(prefix)/sbin/mce-inject
 	install -d $(destdir)$(manprefix)/man/man8
