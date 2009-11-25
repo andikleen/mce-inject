@@ -27,6 +27,8 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <sched.h>
+#include <dirent.h>
+#include <errno.h>
 
 #include "mce.h"
 #include "inject.h"
@@ -37,6 +39,34 @@ static int cpu_num;
 /* map from cpu index to cpu id */
 static int *cpu_map;
 static struct mce **cpu_mce;
+
+#define BANKS "/sys/devices/system/machinecheck/machinecheck0"
+
+int max_bank(void)
+{
+	static int max;
+	int b = 0;
+	struct dirent *de;
+	DIR *d;
+
+	if (max)
+		return max;
+	d = opendir(BANKS);
+	if (!d) {
+		fprintf(stderr, "warning: cannot open %s: %s\n", BANKS, 
+			strerror(errno));
+		return 0xff;
+	}
+	while ((de = readdir(d)) != NULL) { 
+		if (sscanf(de->d_name, "bank%u", &b) == 1)
+			if (b > max)
+				max = b;
+		
+	}
+	closedir(d);
+	return max;
+
+}
 
 void init_cpu_info(void)
 {
@@ -87,6 +117,11 @@ static inline int cpu_id_to_index(int id)
 static void validate_mce(struct mce *m)
 {
 	cpu_id_to_index(m->extcpu);
+	if (m->bank > max_bank()) { 
+		fprintf(stderr, "larger machine check bank %d than supported on this cpu (%d)\n",
+			(int)m->bank, max_bank());	
+		exit(1);
+	}
 }
 
 static void write_mce(int fd, struct mce *m)
