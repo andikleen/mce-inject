@@ -89,7 +89,7 @@ void init_cpu_info(void)
 	fclose(f);
 
 	if (!cpu_num)
-		err("getting cpu ids from /proc/cpuinfo");
+		fprintf(stderr, "cannot get cpu ids from /proc/cpuinfo\n");
 }
 
 void init_inject(void)
@@ -110,7 +110,7 @@ static inline int cpu_id_to_index(int id)
 	for (i = 0; i < cpu_num; i++)
 		if (cpu_map[i] == id)
 			return i;
-	err("invalid cpu id");
+	yyerror("cpu %d not online\n", id);
 	return -1;
 }
 
@@ -118,7 +118,7 @@ static void validate_mce(struct mce *m)
 {
 	cpu_id_to_index(m->extcpu);
 	if (m->bank > max_bank()) { 
-		fprintf(stderr, "larger machine check bank %d than supported on this cpu (%d)\n",
+		yyerror("larger machine check bank %d than supported on this cpu (%d)\n",
 			(int)m->bank, max_bank());	
 		exit(1);
 	}
