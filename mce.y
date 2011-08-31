@@ -62,8 +62,8 @@ mce_start: CPU NUMBER 	   { init(); m.cpu = m.extcpu = $2; }
      | CPU NUMBER ':'
        MACHINE CHECK EXCEPTION ':' NUMBER BANK NUMBER ':'
        NUMBER 		   { init();
-			     m.cpu = $2; m.mcgstatus = $6;
-			     m.bank = $8; m.status = $10; }
+			     m.cpu = $2; m.mcgstatus = $8;
+			     m.bank = $10; m.status = $12; }
      ;
 
 mce:  mce_term
