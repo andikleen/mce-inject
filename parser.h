@@ -14,6 +14,8 @@ enum mceflags {
 	MCE_NOBROADCAST = (1 << 0),
 	MCE_HOLD = (1 << 1),
 	MCE_RAISE_MODE = (1 << 2),
+	MCE_IRQBROADCAST = (1 << 3),
+	MCE_NMIBROADCAST = (1 << 4),
 };
 
 extern enum mceflags mce_flags;

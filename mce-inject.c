@@ -219,8 +219,13 @@ void do_inject_mce(int fd, struct mce *m)
 			err("pthread_create");
 	}
 
-	if (has_random)
-		m->inject_flags |= MCJ_NMI_BROADCAST;
+	if (has_random) {
+		if (mce_flags & MCE_IRQBROADCAST)
+			m->inject_flags |= MCJ_IRQ_BRAODCAST;
+		else
+			/* default using NMI BROADCAST */
+			m->inject_flags |= MCJ_NMI_BROADCAST;
+	}
 
 	/* could wait here for the threads to start up, but the kernel
 	   timeout should be long enough to catch slow ones */
@@ -261,8 +266,11 @@ void inject_mce(struct mce *m)
 	inject_fd = open("/dev/mcelog", O_RDWR);
 	if (inject_fd < 0)
 		err("opening of /dev/mcelog");
-	if (!(m->inject_flags & MCJ_EXCEPTION))
+	if (!(m->inject_flags & MCJ_EXCEPTION)) {
 		mce_flags |= MCE_NOBROADCAST;
+		mce_flags &= ~MCE_IRQBROADCAST;
+		mce_flags &= ~MCE_NMIBROADCAST;
+	}
 	do_inject_mce(inject_fd, m);
 
 	for (i = 0; i < cpu_num; i++) {

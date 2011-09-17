@@ -61,6 +61,12 @@ TSC state injected in machine check
 .I NOBROADCAST
 Don't broadcast exceptions to all CPUs. Default is to broadcast UC
 
+.I IRQBROADCAST
+Broadcast IRQ to all CPUs that not getting error injection.
+
+.I NMIBROADCAST
+Broadcast NMI to all CPUs that not getting error injection.
+
 .I IN_IRQ
 MCE should be injected in interrupt context
 
