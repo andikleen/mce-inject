@@ -1,12 +1,12 @@
 prefix := /usr
 manprefix := ${prefix}/share
 CFLAGS := -Os -g -Wall
-LDFLAGS += -lpthread
+LDFLAGS += -pthread
 
 OBJ := mce.tab.o lex.yy.o mce-inject.o util.o
-GENSRC := mce.tab.c mce.tab.h lex.yy.c
+GENSRC := mce.tab.c lex.yy.c
 SRC := mce-inject.c util.c
-CLEAN := ${OBJ} ${GENSRC} inject mce-inject .depend
+CLEAN := ${OBJ} ${GENSRC} mce.tab.h inject mce-inject .depend
 DISTCLEAN := .depend .gdb_history
 
 .PHONY: clean depend install

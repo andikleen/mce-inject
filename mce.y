@@ -40,7 +40,8 @@ static void init(void);
 
 %}
 
-%token STATUS RIP TSC ADDR MISC CPU BANK MCGSTATUS NOBROADCAST HOLD
+%token STATUS RIP TSC ADDR MISC CPU BANK MCGSTATUS HOLD
+%token NOBROADCAST IRQBROADCAST NMIBROADCAST 
 %token IN_IRQ IN_PROC PROCESSOR TIME SOCKETID APICID MCGCAP
 %token POLL EXCP
 %token CORRECTED UNCORRECTED FATAL MCE
@@ -62,8 +63,8 @@ mce_start: CPU NUMBER 	   { init(); m.cpu = m.extcpu = $2; }
      | CPU NUMBER ':'
        MACHINE CHECK EXCEPTION ':' NUMBER BANK NUMBER ':'
        NUMBER 		   { init();
-			     m.cpu = $2; m.mcgstatus = $6;
-			     m.bank = $8; m.status = $10; }
+			     m.cpu = $2; m.mcgstatus = $8;
+			     m.bank = $10; m.status = $12; }
      ;
 
 mce:  mce_term
@@ -87,6 +88,8 @@ mce_term:   STATUS status_list  { m.status = $2; }
      | MISC NUMBER	   { m.misc = $2; m.status |= MCI_STATUS_MISCV; } 
      | PROCESSOR NUMBER ':' NUMBER { m.cpuvendor = $2; m.cpuid = $4; }
      | NOBROADCAST	   { mce_flags |= MCE_NOBROADCAST; } 
+     | IRQBROADCAST	   { mce_flags |= MCE_IRQBROADCAST; } 
+     | NMIBROADCAST	   { mce_flags |= MCE_NMIBROADCAST; } 
      | HOLD		   { mce_flags |= MCE_HOLD; }
      | IN_IRQ		   { MCJ_CTX_SET(m.inject_flags, MCJ_CTX_IRQ); }
      | IN_PROC		   { MCJ_CTX_SET(m.inject_flags, MCJ_CTX_PROCESS); }
