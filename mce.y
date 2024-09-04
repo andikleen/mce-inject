@@ -49,7 +49,7 @@ static void init(void);
 %token SYMBOL
 %token MACHINE CHECK EXCEPTION
 
-%token RIPV EIPV MCIP
+%token RIPV EIPV MCIP LMCES SEAM_NR
 %token VAL OVER UC EN PCC S AR UCNA SRAO SRAR
 
 %%
@@ -103,7 +103,7 @@ mcgstatus_list:  /* empty */ { $$ = 0; }
      | mcgstatus_list mcgstatus { $$ = $1 | $2; } 
      ;
 
-mcgstatus : RIPV | EIPV | MCIP | NUMBER ; 
+mcgstatus : RIPV | EIPV | MCIP | LMCES | SEAM_NR | NUMBER ;
 
 status_list: 	 /* empty */ { $$ = 0; } 
      | status_list status { $$ = $1 | $2; } 
