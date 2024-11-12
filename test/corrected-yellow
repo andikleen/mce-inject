@@ -1,0 +1,4 @@
+# Log corrected errors with yellow status (corrected errors above the predefined threshold).
+CPU 0 BANK 3
+MCGSTATUS TES_P
+STATUS CORRECTED TES_YELLOW

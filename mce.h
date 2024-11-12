@@ -15,6 +15,7 @@
 #define MCG_STATUS_EIPV  (1ULL<<1)   /* ip points to correct instruction */
 #define MCG_STATUS_MCIP  (1ULL<<2)   /* machine check in progress */
 #define MCG_STATUS_LMCES  (1ULL<<3)   /* local machine check exception signaled */
+#define MCG_STATUS_TES_P  (1ULL<<11)  /* Threshold-based error status supported */
 #define MCG_STATUS_SEAM_NR (1ULL<<12) /* SEAM NON-ROOT */
 
 #define MCI_STATUS_VAL   (1ULL<<63)  /* valid error */
@@ -26,6 +27,7 @@
 #define MCI_STATUS_PCC   (1ULL<<57)  /* processor context corrupt */
 #define MCI_STATUS_S	 (1ULL<<56)  /* Signaled machine check */
 #define MCI_STATUS_AR	 (1ULL<<55)  /* Action required */
+#define MCI_STATUS_TES_YELLOW (1ULL<<54)  /* Threshold-based errors above threshold */
 
 /* MISC register defines */
 #define MCM_ADDR_SEGOFF  0	/* segment offset */

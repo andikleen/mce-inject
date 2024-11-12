@@ -49,8 +49,8 @@ static void init(void);
 %token SYMBOL
 %token MACHINE CHECK EXCEPTION
 
-%token RIPV EIPV MCIP LMCES SEAM_NR
-%token VAL OVER UC EN PCC S AR UCNA SRAO SRAR
+%token RIPV EIPV MCIP LMCES TES_P SEAM_NR
+%token VAL OVER UC EN PCC S AR TES_YELLOW UCNA SRAO SRAR
 
 %%
 
@@ -103,13 +103,13 @@ mcgstatus_list:  /* empty */ { $$ = 0; }
      | mcgstatus_list mcgstatus { $$ = $1 | $2; } 
      ;
 
-mcgstatus : RIPV | EIPV | MCIP | LMCES | SEAM_NR | NUMBER ;
+mcgstatus : RIPV | EIPV | MCIP | LMCES | TES_P | SEAM_NR | NUMBER ;
 
 status_list: 	 /* empty */ { $$ = 0; } 
      | status_list status { $$ = $1 | $2; } 
 
 status: UC | EN | VAL | OVER | PCC | NUMBER | CORRECTED | UNCORRECTED | 
-     FATAL | S | AR | UCNA | SRAO | SRAR
+     FATAL | S | AR | TES_YELLOW | UCNA | SRAO | SRAR
      ; 
 
 %% 
